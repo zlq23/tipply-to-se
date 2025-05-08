@@ -8,7 +8,7 @@ Proste narzędzie, które pozwala przekierowywać donacje z Tipply do StreamElem
   3. Donacja jest następnie przekazywana do `API StreamElements` za pomocą skonfigurowanego tokenu
   4. StreamElements wyświetla donację w swoim systemie alertów
 
- **UWAGA:** Aplikacja musi być cały czas aktywna, aby przekierowywanie donacji działało. Dlatego dodajemy ją jako panel przeglądarkowy do OBS – będzie wtedy zawsze włączona razem z OBS.
+ **UWAGA:** Aplikacja musi być **cały czas aktywna**, aby przekierowywanie donacji działało. Dlatego dodajemy ją jako panel przeglądarkowy do OBS – będzie wtedy zawsze włączona razem z OBS.
 
 ## Poradnik
 
