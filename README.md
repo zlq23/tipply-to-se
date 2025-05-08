@@ -15,12 +15,12 @@ Na samej górze OBS:
 ![Podgląd aplikacji](https://i.imgur.com/FTVlzo8.png)
 
 ### 2. Utwórz nowy panel przeglądarkowy z linkiem aplikacji
-Link:
-    ```
-https://tipply-to-se.onrender.com
-    ```
 
 Wprowadź dowolną `nazwę panelu` i uzupełnij `URL`.
+
+```
+https://tipply-to-se.onrender.com
+```
 
 ![Podgląd aplikacji](https://i.imgur.com/cv9lwNw.png)
 
@@ -36,7 +36,7 @@ Panel można umieścić w przykładowy sposób:
 
 ### 4. Uzupełnij dane w ustawieniach aplikacji
 
-- `Tipply URL` znajdziesz go tutaj → https://app.tipply.pl/konfigurator/powiadomienie-o-wiadomosci (to po prostu link do alertów)
+- `Tipply URL` (link do alertów) znajdziesz go tutaj → https://app.tipply.pl/konfigurator/powiadomienie-o-wiadomosci 
 - `SE JWT Token` znajdziesz go tutaj → https://streamelements.com/dashboard/account/channels  
   Token ważny jest przez około 6 miesięcy i trzeba go później ręcznie odnowić.
 
