@@ -60,6 +60,6 @@ W głównym panelu aplikacji widoczny jest:
     ![Podgląd aplikacji](https://i.imgur.com/yNxjHaj.png)   
   - Zamiast `https://tipply-to-se.onrender.com` podpiąć plik lokalny np. `C:/Users/User/Desktop/tipply/index.html`
 
-    ![Podgląd aplikacji](https://i.imgur.com/PFUey2s.png)
+    ![Podgląd aplikacji](https://i.imgur.com/Uo1h4oy.png)
 
 
