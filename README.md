@@ -1,39 +1,65 @@
 # Tipply to StreamElements 
 
-Proste narzędzie, które pozwala prziekerować donacje z tipply do streamelements.
+Proste narzędzie, które pozwala przekierowywać donacje z Tipply do StreamElements.
 
 ## Poradnik
 
-#### 1. Otwórz ustawienia paneli przeglądarkowych w OBS (na samej górze).
+### 1. Otwórz ustawienia paneli przeglądarkowych w OBS
 
-![Podgląd aplikacji](https://i.imgur.com/FTVlzo8.png) 
+Na samej górze OBS:
+`Panele > Panele przeglądarki` lub `Docks > Custom Browser Docks`.
 
-#### 2. Utwórz nowy panel przeglądarkowy z linkiem: `https://tipply-to-se.onrender.com`
+![Podgląd aplikacji](https://i.imgur.com/FTVlzo8.png)
 
-![Podgląd aplikacji](https://i.imgur.com/cv9lwNw.png) 
+### 2. Utwórz nowy panel przeglądarkowy z linkiem `https://tipply-to-se.onrender.com`
 
-#### 3. Panel można umieścić np. w taki sposób:
+Wprowadź dowolną `nazwę panelu` i uzupełnij `URL`.
 
-Strona musi być cały czas włączona żeby przekierowywanie działało. Dlatego dodajemy ją jako panel żeby była zawsze włączona razem z OBS.
+![Podgląd aplikacji](https://i.imgur.com/cv9lwNw.png)
 
-![Podgląd aplikacji](https://i.imgur.com/YLRLqT0.png) 
+### 3. Dodaj panel do OBS
 
-#### 4. W ustawieniach aplikacji uzupełniamy `SE JWT Token` oraz `Tipply URL`
-* Link do tipply znajdziemy tutaj: https://app.tipply.pl/konfigurator/powiadomienie-o-wiadomosci. Jest to zwykły link do alertów.
-* JWT Token ze streamelements znajdziemy tutaj: https://streamelements.com/dashboard/account/channels. JWT działa przez ograniczony czas, na SE jest to około 6 miesięcy i trzeba go będzie ręcznie wymieniać.
+Żeby dodać nowo utworzony panel klikamy `Panele/Docks > [Nasza nazwa panelu]`.
+
+![Podgląd aplikacji](https://i.imgur.com/ZpRW5sY.png)
+
+Panel można umieścić w przykładowy sposób: 
+
+![Podgląd aplikacji](https://i.imgur.com/YLRLqT0.png)
+
+**UWAGA:**
+Strona musi być cały czas aktywna, aby przekierowywanie działało. Dlatego dodajemy ją jako panel przeglądarkowy – będzie wtedy zawsze włączona razem z OBS.
+
+
+### 4. Uzupełnij dane w ustawieniach aplikacji
+
+- **Tipply URL**: znajdziesz go tutaj → https://app.tipply.pl/konfigurator/powiadomienie-o-wiadomosci (to po prostu link do alertów)
+- **JWT Token (StreamElements)**: znajdziesz go tutaj → https://streamelements.com/dashboard/account/channels  
+  Token ważny jest przez około 6 miesięcy i trzeba go później ręcznie odnowić.
 
 ![Podgląd aplikacji](https://i.imgur.com/ZsyetIi.png)
 
-#### 5. W główym panelu aplikacji widać <b>status połączenia</b> z tipply oraz za ile czasu `JWT Token` wygaśnie.
+### 5. Sprawdź status połączenia
+
+W głównym panelu aplikacji widoczny jest:
+- **Status połączenia z `Tipply`**
+- **Czas do wygaśnięcia `JWT Tokena`**
 
 ![Podgląd aplikacji](https://i.imgur.com/bAXK45b.png)
 
 ## Dodatkowe informacje
-- Wszystkie dane są przechowywane lokalnie w przeglądarce `(localstorage)`
-- `Token JWT` jest używany tylko do emulowania donacji przez API StreamElements
-- `Tipply URL` - link do alertów jest używany tylko do nawiązania połączenia z websocketem tipply.pl, w celu nasłuchwania donacji
-- Aplikacja nie zbiera, ani nie przesyła wprowadzonych danych
-- W razie braku zaufania do mojej aplikacji, można pobrać wszystkie pliki (+ ogarnąć kogoś do sprawdzenia legitności), wrzucić do folderu i zamiast `https://tipply-to-se.onrender.com` podpiąć plik lokalny np. `C:/Users/User/Desktop/tipply/index.html`
 
-![Podgląd aplikacji](https://i.imgur.com/yNxjHaj.png)
-![Podgląd aplikacji](https://i.imgur.com/PFUey2s.png)
+- Wszystkie dane są przechowywane lokalnie w przeglądarce (localStorage)
+- `JWT Token` jest używany tylko do emulowania donacji przez API StreamElements
+- `Tipply URL` służy wyłącznie do połączenia z websocketem Tipply i nasłuchiwania donacji
+- Aplikacja **nie zbiera ani nie przesyła** wprowadzonych danych
+- W razie braku zaufania do mojej aplikacji w wersji online, można z niej korzystać lokalnie: 
+  - Pobrać wszystkie pliki (+ ogarnąć kogoś do sprawdzenia legitności skryptu <img style="height: 20px; transform: translateY(5px);" src="https://cdn.7tv.app/emote/01GB3PQ1K8000CW87FDNNPRBZG/1x.avif">) 
+  - Wrzucić pliki do jakiegoś folderu
+
+    ![Podgląd aplikacji](https://i.imgur.com/yNxjHaj.png)   
+  - Zamiast `https://tipply-to-se.onrender.com` podpiąć plik lokalny np. `C:/Users/User/Desktop/tipply/index.html`
+
+    ![Podgląd aplikacji](https://i.imgur.com/PFUey2s.png)
+
+
