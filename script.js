@@ -230,7 +230,7 @@ async function sendTipToSE(tip) {
 }
 
 async function validateToken() {
-    if (!CONFIG.SE_JWT_TOKEN && !CONFIG.TIPPLY_USER_ID) {
+    if (!CONFIG.SE_JWT_TOKEN || !CONFIG.TIPPLY_USER_ID) {
         DOM.jwtInfoGeneral.innerHTML = 'Uzupełnij pola w <br><span style="font-weight: bold">ustawieniach</span>';
         updateStatus("Brak konfiguracji", false);
         return false;
