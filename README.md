@@ -36,8 +36,8 @@ Panel można umieścić w przykładowy sposób:
 
 ### 4. Uzupełnij dane w ustawieniach aplikacji
 
-- `Tipply URL` (link do alertów) znajdziesz go tutaj → https://app.tipply.pl/konfigurator/powiadomienie-o-wiadomosci 
-- `SE JWT Token` znajdziesz go tutaj → https://streamelements.com/dashboard/account/channels  
+- `Tipply URL` (link do alertów) znajdziesz go tutaj → <a href="https://app.tipply.pl/konfigurator/powiadomienie-o-wiadomosci" target="_blank">Alerty Tipply</a>
+- `SE JWT Token` znajdziesz go tutaj → <a href="https://streamelements.com/dashboard/account/channels" target="_blank">Ustawienia StreamElements</a> 
   Token ważny jest przez około 6 miesięcy i trzeba go później ręcznie odnowić.
 
 ![Podgląd aplikacji](https://i.imgur.com/ZsyetIi.png)
