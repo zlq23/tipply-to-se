@@ -171,7 +171,7 @@ function startTokenWorker(expiryTimestamp) {
 }
 
 function handleTokenExpired() {
-    DOM.jwtInfoGeneral.innerHTML = 'Zaktualizuj token w <span style="font-weight: bold">ustawieniach</span>';
+    DOM.jwtInfoGeneral.innerHTML = 'Zaktualizuj token <br> w <span style="font-weight: bold">ustawieniach</span>';
     DOM.jwtInfoExpiry.textContent = '';
     updateStatus("Token wygasł", false);
     disconnectSocket();
@@ -231,7 +231,7 @@ async function sendTipToSE(tip) {
 
 async function validateToken() {
     if (!CONFIG.SE_JWT_TOKEN && !CONFIG.TIPPLY_USER_ID) {
-        DOM.jwtInfoGeneral.innerHTML = 'Uzupełnij pola w <span style="font-weight: bold">ustawieniach</span>';
+        DOM.jwtInfoGeneral.innerHTML = 'Uzupełnij pola w <br><span style="font-weight: bold">ustawieniach</span>';
         updateStatus("Brak konfiguracji", false);
         return false;
     } 
