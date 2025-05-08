@@ -14,7 +14,11 @@ Na samej górze OBS:
 
 ![Podgląd aplikacji](https://i.imgur.com/FTVlzo8.png)
 
-### 2. Utwórz nowy panel przeglądarkowy z linkiem `https://tipply-to-se.onrender.com`
+### 2. Utwórz nowy panel przeglądarkowy z linkiem aplikacji
+Link:
+    ```
+https://tipply-to-se.onrender.com
+    ```
 
 Wprowadź dowolną `nazwę panelu` i uzupełnij `URL`.
 
