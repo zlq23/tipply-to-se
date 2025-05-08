@@ -4,10 +4,10 @@ Proste narzędzie, które pozwala przekierowywać donacje z Tipply do StreamElem
 
 ## Poradnik
 
-### 1. Otwórz ustawienia paneli przeglądarkowych w OBS
-
 **UWAGA:**
 Strona musi być cały czas aktywna, aby przekierowywanie działało. Dlatego dodajemy ją jako panel przeglądarkowy – będzie wtedy zawsze włączona razem z OBS.
+
+### 1. Otwórz ustawienia paneli przeglądarkowych w OBS
 
 Na samej górze OBS:
 `Panele > Panele przeglądarki` lub `Docks > Custom Browser Docks`.
