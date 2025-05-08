@@ -64,7 +64,7 @@ W celu sprawdzenia działania można wysłać testowy donate z **Tipply**.
 
 ![Okno wiadomości testowej tipply](https://i.imgur.com/r1UN7ag.png)
 
-Jeśli wszystko działa powinniśmy zobaczyć ten donate na **StreamElements** w panelu aktywności.
+Jeśli wszystko działa powinniśmy zobaczyć testową donacje w panelu aktywności **StreamElements**.
 
 ![Panel aktywności streamelements](https://i.imgur.com/Ikd6UZQ.png)
 ## Dodatkowe informacje
