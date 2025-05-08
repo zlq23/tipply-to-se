@@ -1,4 +1,3 @@
-
 function loadConfig() {
     return {
         TIPPLY_USER_ID: localStorage.getItem('tipply_user_id') || "",
@@ -21,49 +20,68 @@ function saveConfig(tipplyId, seToken) {
 
 const CONFIG = loadConfig();
 const DOM = {
-    jwtDate: document.getElementById('jwtDate'),
-    jwtInfo: document.getElementById('jwtInfo'),
-    status: document.getElementById('status'),
-    refreshHint: document.getElementById('refreshHint'),
+    jwtInfoContainer: document.getElementById('jwtInfoContainer'),
+    jwtInfoGeneral: document.getElementById('infoGeneral'),
+    jwtInfoExpiry: document.getElementById('infoExpiry'),        
+    status: document.getElementById('statusContainer'),
     avatar: document.getElementById('avatar'),
-    avatarContainer: document.getElementById('avatarContainer'),
+    username: document.getElementById('username'),
     configBtn: document.getElementById('configBtn'),
     configOverlay: document.getElementById('configOverlay'),
-    configForm: document.getElementById('configForm'),
     tipplyIdInput: document.getElementById('tipplyId'),
     seTokenInput: document.getElementById('seToken'),
-    saveConfigBtn: document.getElementById('saveConfig')
+    saveConfigBtn: document.getElementById('saveConfig'),
+    closeConfigBtn: document.getElementById('closeConfig'),
+    seLink: document.getElementById('seLink')
 };
 
 let socket = null;
+let tokenWorker = null;
 
-DOM.configBtn.addEventListener('click', () => {
-    DOM.tipplyIdInput.value = CONFIG.TIPPLY_USER_ID;
-    DOM.seTokenInput.value = CONFIG.SE_JWT_TOKEN;
-    DOM.configOverlay.style.display = 'flex';
-});
+function setupEventListeners() {
+    DOM.configBtn.addEventListener('click', () => {
+        DOM.tipplyIdInput.value = CONFIG.TIPPLY_USER_ID;
+        DOM.seTokenInput.value = CONFIG.SE_JWT_TOKEN;
+        DOM.configOverlay.style.display = 'flex';
+    });
 
+    DOM.saveConfigBtn.addEventListener('click', () => {
+        const tipplyId = DOM.tipplyIdInput.value.trim();
+        const seToken = DOM.seTokenInput.value.trim();
 
-DOM.saveConfigBtn.addEventListener('click', () => {
-    const tipplyId = DOM.tipplyIdInput.value.trim();
-    const seToken = DOM.seTokenInput.value.trim();
+        if (tipplyId === CONFIG.TIPPLY_USER_ID && seToken === CONFIG.SE_JWT_TOKEN) {
+            DOM.configOverlay.style.display = 'none';
+            return;
+        }
 
-    if (tipplyId === CONFIG.TIPPLY_USER_ID && seToken === CONFIG.SE_JWT_TOKEN) {
+        saveConfig(tipplyId, seToken);
         DOM.configOverlay.style.display = 'none';
-        return;
-    }
+        location.reload();
+    });
 
-    saveConfig(tipplyId, seToken);
-    DOM.configOverlay.style.display = 'none';
-    location.reload();
-});
-
-
-DOM.configOverlay.addEventListener('click', (e) => {
-    if (e.target === DOM.configOverlay) {
+    DOM.closeConfigBtn.addEventListener('click', () => {
         DOM.configOverlay.style.display = 'none';
-    }
-});
+    });
+
+    let isCopying = false;
+    DOM.seLink.addEventListener('click', () => {
+        if (isCopying) return;
+        isCopying = true;
+        const originalText = DOM.seLink.textContent;
+
+        navigator.clipboard.writeText('https://streamelements.com/dashboard/account/channels').then(() => {
+            DOM.seLink.textContent = "skopiowano do schowka";
+            DOM.seLink.classList.add('copied');
+            setTimeout(() => {
+                DOM.seLink.textContent = originalText;
+                DOM.seLink.classList.remove('copied');
+                isCopying = false;
+            }, 2000);
+        }).catch(() => {
+            isCopying = false;
+        });
+    });
+}
 
 function parseJwt(token) {
     try {
@@ -80,62 +98,109 @@ function updateStatus(text, isConnected) {
     DOM.status.className = isConnected ? 'connected' : 'disconnected';
 }
 
-async function validateToken() {
-    if (!CONFIG.SE_JWT_TOKEN) {
-        updateStatus("Brak tokenu", false);
-        return false;
-    } else if (!CONFIG.TIPPLY_USER_ID) {
-        updateStatus("Brak Tipply URL", false);
-        return false;
-    }
+function formatTime(ms) {
+    const seconds = Math.floor((ms / 1000) % 60);
+    const minutes = Math.floor((ms / (1000 * 60)) % 60);
+    const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
+    const days = Math.floor(ms / (1000 * 60 * 60 * 24));
 
-    const jwtData = parseJwt(CONFIG.SE_JWT_TOKEN);
-    if (!jwtData || !jwtData.exp) {
-        DOM.jwtDate.textContent = "Błędny token";
-        updateStatus("Błąd tokenu", false);
-        return false;
-    }
+    return { days, hours, minutes, seconds };
+}
 
-    const expiryDate = new Date(jwtData.exp * 1000);
-    const now = new Date();
-    const diffDays = Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24));
+function updateTokenDisplay(totalMs) {
+    const time = formatTime(totalMs);
+    let displayText = totalMs < 86400000 ? 
+        `${time.hours}h ${time.minutes}m ${time.seconds}s` : 
+        `${time.days}d ${time.hours}h ${time.minutes}m`;
+    
+    DOM.jwtInfoGeneral.textContent = 'Token wygaśnie za:';
+    DOM.jwtInfoExpiry.textContent = displayText;
+    DOM.jwtInfoExpiry.className = time.days <= 7 ? 'warning' : 'ok';
+}
 
-    DOM.jwtDate.textContent = expiryDate.toLocaleString('pl-PL');
+function createWorker() {
+    const workerCode = `
+        self.onmessage = function(e) {
+            const expiry = e.data.expiry;
+            let isFinalDay = false;
+            
+            const check = () => {
+                const now = Date.now();
+                const diff = expiry - now;
+                
+                if (diff <= 0) {
+                    postMessage({ expired: true });
+                    clearInterval(interval);
+                    return;
+                }
+                
+                if (!isFinalDay && diff < 86400000) {
+                    isFinalDay = true;
+                    clearInterval(interval);
+                    interval = setInterval(check, 1000);
+                }
+                
+                postMessage({ 
+                    totalMs: diff,
+                    expired: false 
+                });
+            };
+            
+            let interval = setInterval(check, 60000);
+            check();
+        };
+    `;
+    
+    const blob = new Blob([workerCode], { type: 'application/javascript' });
+    return new Worker(URL.createObjectURL(blob));
+}
 
-    if (diffDays <= 0) {
-        DOM.jwtDate.className = 'expired';
-        DOM.jwtInfo.innerText = '';
-        DOM.refreshHint.innerHTML = 'Nowy token znajdziesz tu: <span class="refresh-link">www.streamelements.com/dashboard/account/channels</span>';
-        updateStatus("Token wygasł", false);
-        return false;
-    }
-
-    if (diffDays <= 7) DOM.jwtDate.className = 'warning';
-
-    try {
-        const response = await fetch('https://api.streamelements.com/kappa/v2/channels/me', {
-            headers: {
-                'Authorization': `Bearer ${CONFIG.SE_JWT_TOKEN}`,
-                'Accept': 'application/json'
-            }
-        });
-
-        if (!response.ok) throw new Error("Invalid token");
-
-        const data = await response.json();
-        CONFIG.SE_CHANNEL_ID = data._id;
-
-        if (data.avatar) {
-            DOM.avatar.src = data.avatar;
-            DOM.avatarContainer.style.display = 'block';
+function startTokenWorker(expiryTimestamp) {
+    if (tokenWorker) tokenWorker.terminate();
+    
+    tokenWorker = createWorker();
+    tokenWorker.postMessage({ expiry: expiryTimestamp });
+    
+    tokenWorker.onmessage = (e) => {
+        if (e.data.expired) {
+            handleTokenExpired();
+        } else {
+            updateTokenDisplay(e.data.totalMs);
         }
+    };
+}
 
-        return true;
-    } catch (error) {
-        DOM.jwtDate.className = 'expired';
-        updateStatus("Nieprawidłowy token", false);
-        return false;
+function handleTokenExpired() {
+    DOM.jwtInfoGeneral.innerHTML = 'Zaktualizuj token w <span style="font-weight: bold">ustawieniach</span>';
+    DOM.jwtInfoExpiry.textContent = '';
+    updateStatus("Token wygasł", false);
+    disconnectSocket();
+    if (tokenWorker) {
+        tokenWorker.terminate();
+        tokenWorker = null;
     }
+}
+
+function disconnectSocket() {
+    if (socket) {
+        socket.disconnect();
+        socket = null;
+    }
+}
+
+function connectToTipply() {
+    disconnectSocket();
+
+    socket = io(`wss://ws.tipply.pl/tip/${formatTipplyID(CONFIG.TIPPLY_USER_ID)}`, {
+        path: "/socket.io",
+        transports: ["websocket"]
+    });
+
+    socket.on("connect", () => updateStatus("Połączono", true));
+    socket.on("disconnect", () => updateStatus("Rozłączono", false));
+    socket.on("reconnecting", (attempt) => updateStatus(`Próba połączenia (${attempt})`, false));
+    socket.on("reconnect_failed", () => updateStatus("Błąd połączenia", false));
+    socket.on("tip", (data) => sendTipToSE(JSON.parse(data)));
 }
 
 async function sendTipToSE(tip) {
@@ -153,7 +218,7 @@ async function sendTipToSE(tip) {
                     email: tip.email || 'anonymous@tipply.pl',
                 },
                 provider: 'tipply',
-                message: formatMessageWithEmotes(tip.message) || '',
+                message: tip.message?.replace(/<img[^>]*alt="([^"]*)"[^>]*>/g, (_, alt) => alt) || '',
                 amount: parseFloat((tip.amount / 100).toFixed(2)),
                 currency: CONFIG.CURRENCY,
                 imported: true,
@@ -164,48 +229,46 @@ async function sendTipToSE(tip) {
     }
 }
 
-function formatMessageWithEmotes(message) {
-    if (!message) return '';
-    return message.replace(/<img[^>]*alt="([^"]*)"[^>]*>/g, function (match, altText) {
-        return altText;
-    });
-}
+async function validateToken() {
+    if (!CONFIG.SE_JWT_TOKEN && !CONFIG.TIPPLY_USER_ID) {
+        DOM.jwtInfoGeneral.innerHTML = 'Uzupełnij pola w <span style="font-weight: bold">ustawieniach</span>';
+        updateStatus("Brak konfiguracji", false);
+        return false;
+    } 
 
-function connectToTipply() {
-    if (socket) socket.disconnect();
-
-    socket = io(`wss://ws.tipply.pl/tip/${formatTipplyID(CONFIG.TIPPLY_USER_ID)}`, {
-        path: "/socket.io",
-        transports: ["websocket"]
-    });
-
-    socket.on("connect", () => {
-        updateStatus("Połączono", true);
-    });
-
-    socket.on("disconnect", () => {
-        updateStatus("Rozłączono", false);
-    });
-
-    socket.on("reconnecting", (attempt) => {
-        updateStatus(`Próba połączenia (${attempt})`, false);
-    });
-
-    socket.on("reconnect_failed", () => {
-        updateStatus("Błąd połączenia", false);
-    });
-
-    socket.on("tip", (data) => {
-        const tip = JSON.parse(data);
-        sendTipToSE(tip);
-    });
-}
-
-async function init() {
-    const isValid = await validateToken();
-    if (isValid) {
-        connectToTipply();
+    const jwtData = parseJwt(CONFIG.SE_JWT_TOKEN);
+    if (!jwtData?.exp) {
+        handleTokenExpired();
+        return false;
     }
+
+    startTokenWorker(jwtData.exp * 1000);
+
+    try {
+        const response = await fetch('https://api.streamelements.com/kappa/v2/channels/me', {
+            headers: {
+                'Authorization': `Bearer ${CONFIG.SE_JWT_TOKEN}`,
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) throw new Error("Invalid token");
+
+        const data = await response.json();
+        CONFIG.SE_CHANNEL_ID = data._id;
+        DOM.avatar.src = data.avatar || 'unknown.png'; 
+        DOM.username.textContent = data.displayName || 'username';
+        
+        return true;
+    } catch (error) {
+        updateStatus("Niepoprawny SE token", false);
+        return false;
+    }
+}
+
+function init() {
+    setupEventListeners();
+    validateToken().then(isValid => isValid && connectToTipply());
 }
 
 init();
