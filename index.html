@@ -5,34 +5,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tipply → SE</title>
-    <link href="https://api.fontshare.com/css?f%5B%5D=switzer@400,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="container">
+    <div id="mainContainer">
         <button id="configBtn"></button>
-        <div id="avatarContainer" style="display: none;">
-            <img id="avatar">
+        <div id="userContainer">
+            <img id="avatar" src="unknown.png">
+            <div id="username">username</div>
         </div>
-        <div id="title">Tipply + SE</div>
-        <div id="jwtInfo">
-            Token ważny do:
-            <div id="jwtDate"></div>
+        <div id="statusContainer">Status</div>
+        <div id="jwtInfoContainer">
+            <div id="infoGeneral"></div>
+            <div id="infoExpiry"></div>
         </div>
-        <div id="status"></div>
-        <div class="hint" id="refreshHint"></div>
     </div>
 
     <div id="configOverlay">
         <div id="configForm">
-            <label for="tipplyId">Link alertów tipply:</label>
+            <label for="tipplyId">Tipply URL</label>
             <input type="password" id="tipplyId">
 
-            <label for="seToken">SE Token:</label>
+            <label for="seToken">SE JWT Token</label>
             <input type="password" id="seToken">
+            <div id="seLink">(link do tokenu)</div>
 
-            <button id="saveConfig">Zapisz</button>
+            <div id="buttonsContainer">
+                <button id="saveConfig">Zapisz</button>
+                <button id="closeConfig">Wyjdź</button>
+            </div>
+
         </div>
     </div>
 
