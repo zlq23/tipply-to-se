@@ -69,8 +69,8 @@ Jeśli wszystko działa powinniśmy zobaczyć ten donate na **StreamElements**.
 1. Pobierz potrzebne pliki projektu *(index.html, style.css, script.js)*  
 2. Umieść pobrane pliki w jednym folderze
 
-   ![Podgląd aplikacji](https://i.imgur.com/Uo1h4oy.png)  
-3. W OBS użyj ścieżki do pliku `index.html` zamiast linku (np. `C:/Users/User/Desktop/tipply/index.html`):
+   ![Podgląd aplikacji](https://i.imgur.com/8HdQeQX.png)  
+3. W OBS użyj ścieżki do pliku `index.html` zamiast linku (np. `C:/Users/User/Desktop/tipply/index.html`)
 
     ![Podgląd aplikacji](https://i.imgur.com/PFUey2s.png)
 
