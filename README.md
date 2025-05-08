@@ -10,7 +10,7 @@ Proste narzędzie, które pozwala prziekerować donacje z tipply do streamelemen
 
 #### 2. Utwórz nowy panel przeglądarkowy z linkiem: `https://tipply-to-se.onrender.com`
 
-![Podgląd aplikacji](https://i.imgur.com/48UZijQ.png) 
+![Podgląd aplikacji](https://i.imgur.com/cv9lwNw.png) 
 
 #### 3. Panel można umieścić np. w taki sposób:
 
@@ -36,4 +36,4 @@ Strona musi być cały czas włączona żeby przekierowywanie działało. Dlateg
 - W razie braku zaufania do mojej aplikacji, można pobrać wszystkie pliki (+ ogarnąć kogoś do sprawdzenia legitności), wrzucić do folderu i zamiast `https://tipply-to-se.onrender.com` podpiąć plik lokalny np. `C:/Users/User/Desktop/tipply/index.html`
 
 ![Podgląd aplikacji](https://i.imgur.com/yNxjHaj.png)
-![Podgląd aplikacji](https://i.imgur.com/vzLYUUL.png)
+![Podgląd aplikacji](https://i.imgur.com/PFUey2s.png)
