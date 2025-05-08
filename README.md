@@ -57,9 +57,9 @@ W głównym panelu aplikacji widoczny jest:
   - Pobrać wszystkie pliki (+ ogarnąć kogoś do sprawdzenia legitności skryptu <img style="height: 20px; transform: translateY(5px);" src="https://cdn.7tv.app/emote/01GB3PQ1K8000CW87FDNNPRBZG/1x.avif">) 
   - Wrzucić pliki do jakiegoś folderu
 
-    ![Podgląd aplikacji](https://i.imgur.com/yNxjHaj.png)   
+    ![Podgląd aplikacji](https://i.imgur.com/Uo1h4oy.png)   
   - Zamiast `https://tipply-to-se.onrender.com` podpiąć plik lokalny np. `C:/Users/User/Desktop/tipply/index.html`
 
-    ![Podgląd aplikacji](https://i.imgur.com/Uo1h4oy.png)
+    ![Podgląd aplikacji](https://i.imgur.com/PFUey2s.png)
 
 
