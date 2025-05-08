@@ -61,6 +61,7 @@ Jeśli wszystko działa powinniśmy zobaczyć ten donate na **StreamElements**.
 - `JWT Token` jest używany tylko do emulowania donacji przez API StreamElements
 - `Tipply URL` służy wyłącznie do połączenia z websocketem Tipply i nasłuchiwania donacji
 - Aplikacja **nie zbiera ani nie przesyła** wprowadzonych danych
+- W przypadku pytań, można skontaktować się przez Discord: `zalech23`
 - W razie braku zaufania do mojej aplikacji w wersji online, można z niej korzystać lokalnie:
 
 **Lokalna instalacja krok po kroku:**
