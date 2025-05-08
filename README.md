@@ -5,7 +5,7 @@ Proste narzędzie, które pozwala przekierowywać donacje z Tipply do StreamElem
 ## Jak to działa?
   1. Aplikacja łączy się z `WebSocketem` Tipply, aby otrzymywać powiadomienia o donacjach
   2. Po otrzymaniu donacji, jest ona przetwarzana (nick, kwota, wiadomość)
-  3. Donacja jest następnie przekazywana do API StreamElements za pomocą skonfigurowanego tokenu
+  3. Donacja jest następnie przekazywana do `API StreamElements za pomocą skonfigurowanego tokenu`
   4. StreamElements wyświetla donację w swoim systemie alertów
 
  **UWAGA:** Aplikacja musi być cały czas aktywna, aby przekierowywanie donacji działało. Dlatego dodajemy ją jako panel przeglądarkowy do OBS – będzie wtedy zawsze włączona razem z OBS.
@@ -74,6 +74,7 @@ Jeśli wszystko działa powinniśmy zobaczyć ten donate na **StreamElements** w
 - `Tipply URL` służy wyłącznie do połączenia z websocketem Tipply i nasłuchiwania donacji
 - Aplikacja **nie zbiera ani nie przesyła** wprowadzonych danych
 - W przypadku pytań, można skontaktować się przez Discord: `zalech23`
+- Projekt jest częściowo bazowany na pracy `BOT-K4CP3R`: https://github.com/BOT-K4CP3R/tipplyToSe
 - W razie braku zaufania do mojej aplikacji w wersji online, można z niej korzystać lokalnie:
 
 ### Lokalna instalacja krok po kroku
