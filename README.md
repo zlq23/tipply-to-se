@@ -61,12 +61,16 @@ Jeśli wszystko działa powinniśmy zobaczyć ten donate na **StreamElements**.
 - `JWT Token` jest używany tylko do emulowania donacji przez API StreamElements
 - `Tipply URL` służy wyłącznie do połączenia z websocketem Tipply i nasłuchiwania donacji
 - Aplikacja **nie zbiera ani nie przesyła** wprowadzonych danych
-- W razie braku zaufania do mojej aplikacji w wersji online, można z niej korzystać lokalnie: 
-  - Pobrać wszystkie pliki (+ ogarnąć kogoś do sprawdzenia legitności skryptu <img style="height: 20px; transform: translateY(5px);" src="https://cdn.7tv.app/emote/01GB3PQ1K8000CW87FDNNPRBZG/1x.avif">) 
-  - Wrzucić pliki do jakiegoś folderu
+- W razie braku zaufania do mojej aplikacji w wersji online, można z niej korzystać lokalnie:
 
-    ![Podgląd aplikacji](https://i.imgur.com/Uo1h4oy.png)   
-  - Zamiast `https://tipply-to-se.onrender.com` podpiąć plik lokalny np. `C:/Users/User/Desktop/tipply/index.html`
+**Lokalna instalacja krok po kroku:**
+
+0. Ogarnij kogoś do sprawdzenia legitności skryptu <img style="height: 20px; transform: translateY(5px);" src="https://cdn.7tv.app/emote/01GB3PQ1K8000CW87FDNNPRBZG/1x.avif"> 
+1. Pobierz potrzebne pliki projektu *(index.html, style.css, script.js)*  
+2. Umieść pobrane pliki w jednym folderze
+
+   ![Podgląd aplikacji](https://i.imgur.com/Uo1h4oy.png)  
+3. W OBS użyj ścieżki do pliku `index.html` zamiast linku (np. `C:/Users/User/Desktop/tipply/index.html`):
 
     ![Podgląd aplikacji](https://i.imgur.com/PFUey2s.png)
 
