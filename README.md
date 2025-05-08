@@ -12,6 +12,8 @@ Proste narzędzie, które pozwala przekierowywać donacje z Tipply do StreamElem
 
 ## Poradnik
 
+Aplikację można używać online przez link `https://tipply-to-se.onrender.com` lub lokalnie w sposób opisany [tutaj](#lokalna-instalacja-krok-po-kroku).
+
 ### 1. Otwórz ustawienia paneli przeglądarkowych w OBS
 
 Na samej górze OBS:
@@ -74,7 +76,7 @@ Jeśli wszystko działa powinniśmy zobaczyć ten donate na **StreamElements** w
 - W przypadku pytań, można skontaktować się przez Discord: `zalech23`
 - W razie braku zaufania do mojej aplikacji w wersji online, można z niej korzystać lokalnie:
 
-###Lokalna instalacja krok po kroku:
+### Lokalna instalacja krok po kroku
 
 0. Ogarnij kogoś do sprawdzenia legitności skryptu <img style="height: 20px; transform: translateY(5px);" src="https://cdn.7tv.app/emote/01GB3PQ1K8000CW87FDNNPRBZG/1x.avif"> 
 1. Pobierz potrzebne pliki projektu *(index.html, style.css, script.js)*  
