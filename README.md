@@ -30,9 +30,10 @@ Strona musi być cały czas włączona żeby przekierowywanie działało. Dlateg
 
 ## Dodatkowe informacje
 - Wszystkie dane są przechowywane lokalnie w przeglądarce `(localstorage)`
-- `Token JWT` jest używany tylko do komunikacji z API StreamElements
-- Aplikacja nie zbiera żadnych danych
-- W razie braku zaufania do mojej aplikacji, można pobrać wszystkie pliki, wrzucić do folderu i zamiast `https://tipply-to-se.onrender.com` podpiąć plik lokalny np. `C:/Users/User/Desktop/tipply/index.html`
+- `Token JWT` jest używany tylko do emulowania donacji przez API StreamElements
+- `Tipply URL` - link do alertów jest używany tylko do nawiązania połączenia z websocketem tipply.pl, w celu nasłuchwania donacji
+- Aplikacja nie zbiera, ani nie przesyła wprowadzonych danych
+- W razie braku zaufania do mojej aplikacji, można pobrać wszystkie pliki (+ ogarnąć kogoś do sprawdzenia legitności), wrzucić do folderu i zamiast `https://tipply-to-se.onrender.com` podpiąć plik lokalny np. `C:/Users/User/Desktop/tipply/index.html`
 
 ![Podgląd aplikacji](https://i.imgur.com/yNxjHaj.png)
 ![Podgląd aplikacji](https://i.imgur.com/vzLYUUL.png)
