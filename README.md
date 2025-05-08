@@ -38,7 +38,7 @@ Panel można umieścić w przykładowy sposób:
 
 ![Podgląd aplikacji](https://i.imgur.com/ZsyetIi.png)
 
-### 5. Sprawdź status połączenia
+### 5. Sprawdź działanie aplikacji
 
 W głównym panelu aplikacji widoczny jest:
 - **Status połączenia z `Tipply`**
@@ -46,6 +46,15 @@ W głównym panelu aplikacji widoczny jest:
 
 ![Podgląd aplikacji](https://i.imgur.com/bAXK45b.png)
 
+W celu sprawdzenia działania można wysłać testowy donate z **Tipply**.
+
+![Podgląd aplikacji](https://i.imgur.com/rQ5YbrE.png)
+
+![Podgląd aplikacji](https://i.imgur.com/r1UN7ag.png)
+
+Jeśli wszystko działa powinniśmy zobaczyć ten donate na **StreamElements**.
+
+![Podgląd aplikacji](https://i.imgur.com/Ikd6UZQ.png)
 ## Dodatkowe informacje
 
 - Wszystkie dane są przechowywane lokalnie w przeglądarce (localStorage)
