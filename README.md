@@ -48,7 +48,7 @@ Panel można umieścić w przykładowy sposób:
 - `Tipply URL` (link do alertów) znajdziesz go tutaj → https://app.tipply.pl/konfigurator/powiadomienie-o-wiadomosci
 - `SE JWT Token` znajdziesz go tutaj → https://streamelements.com/dashboard/account/channels
   
-  Token ważny jest przez około 6 miesięcy i trzeba go później ręcznie odnowić.
+  Token zmienia się co około 6 miesięcy i trzeba go później ręcznie odnowić.
 
 ### 5. Sprawdź działanie aplikacji
 
