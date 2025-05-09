@@ -34,7 +34,8 @@ const DOM = {
     seTokenInput: document.getElementById('seToken'),
     saveConfigBtn: document.getElementById('saveConfig'),
     closeConfigBtn: document.getElementById('closeConfig'),
-    seLink: document.getElementById('seLink')
+    seLink: document.getElementById('seLink'),
+    mainContainer: document.getElementById('mainContainer')
 };
 
 DOM.avatar.src = unkownAvatar;
@@ -47,7 +48,7 @@ function setupEventListeners() {
     DOM.configBtn.addEventListener('click', () => {
         DOM.tipplyIdInput.value = CONFIG.TIPPLY_USER_ID;
         DOM.seTokenInput.value = CONFIG.SE_JWT_TOKEN;
-        DOM.configOverlay.style.display = 'flex';
+        showConfig();  
     });
 
     DOM.saveConfigBtn.addEventListener('click', () => {
@@ -55,17 +56,17 @@ function setupEventListeners() {
         const seToken = DOM.seTokenInput.value.trim();
 
         if (tipplyId === CONFIG.TIPPLY_USER_ID && seToken === CONFIG.SE_JWT_TOKEN) {
-            DOM.configOverlay.style.display = 'none';
+            hideConfig();
             return;
         }
 
         saveConfig(tipplyId, seToken);
-        DOM.configOverlay.style.display = 'none';
+        hideConfig();
         location.reload();
     });
 
     DOM.closeConfigBtn.addEventListener('click', () => {
-        DOM.configOverlay.style.display = 'none';
+        hideConfig();
     });
 
     let isCopying = false;
@@ -90,6 +91,16 @@ function setupEventListeners() {
     window.addEventListener('beforeunload', () => {
         clearTimeout(errorTimeout);
     });    
+}
+
+function showConfig() {
+    DOM.configOverlay.style.display = 'flex';
+    DOM.mainContainer.style.display = 'none';
+}
+
+function hideConfig() {
+    DOM.configOverlay.style.display = 'none';
+    DOM.mainContainer.style.display = 'flex';
 }
 
 function parseJwt(token) {
