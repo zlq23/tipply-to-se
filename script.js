@@ -1,4 +1,4 @@
-let unknownAvatar = '/assets/unknown-avatar.svg';
+let unknownAvatar = 'assets/unknown-avatar.svg';
 let socket = null;
 let tokenWorker = null;
 let errorTimeout = null;
