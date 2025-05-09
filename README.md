@@ -31,15 +31,13 @@ https://tipply-to-se.onrender.com
 
 ![Okno paneli przeglądarek OBS](https://i.imgur.com/cv9lwNw.png)
 
-### 3. Dodaj panel do OBS
-
-Żeby dodać nowo utworzony panel klikamy `Panele/Docks > [Nasza nazwa panelu]`.
-
-![Ustawienia paneli OBS](https://i.imgur.com/ZpRW5sY.png)
-
 Panel można umieścić w przykładowy sposób: 
 
 ![Przykład umieszczonego panelu w OBS](https://i.imgur.com/YLRLqT0.png)
+
+Jeśli zamkniemy panel, można go łatwo przywrócić, klikając  `Panele/Docks > [Nasza nazwa panelu]`.
+
+![Ustawienia paneli OBS](https://i.imgur.com/ZpRW5sY.png)
 
 ### 4. Uzupełnij dane w ustawieniach aplikacji
 
