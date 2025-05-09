@@ -1,25 +1,7 @@
-let unkownAvatar = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22100%22%20height%3D%22100%22%20viewBox%3D%220%200%20100%20100%22%3E%3Cdefs%3E%3Cstyle%3E.b%7Bfill%3A%23fff%3B%7D.c%7Bfill%3A%233b404c%3B%7D.d%7Bfill%3A%23596172%3B%7D%3C/style%3E%3C/defs%3E%3Ccircle%20class%3D%22c%22%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2248.5%22/%3E%3Cpath%20class%3D%22d%22%20d%3D%22m50%2C3c25.92%2C0%2C47%2C21.08%2C47%2C47s-21.08%2C47-47%2C47S3%2C75.92%2C3%2C50%2C24.08%2C3%2C50%2C3m0-3C22.39%2C0%2C0%2C22.39%2C0%2C50s22.39%2C50%2C50%2C50%2C50-22.39%2C50-50S77.61%2C0%2C50%2C0h0Z%22/%3E%3Cpath%20class%3D%22b%22%20d%3D%22m64.04%2C41.6c0%2C1.64-.27%2C3.04-.81%2C4.2s-1.23%2C2.15-2.07%2C2.97-1.74%2C1.59-2.7%2C2.31c-.96.72-1.87%2C1.46-2.73%2C2.22s-1.56%2C1.65-2.1%2C2.67c-.54%2C1.02-.81%2C2.25-.81%2C3.69h-9.18c0-2.04.27-3.77.81-5.19.54-1.42%2C1.24-2.62%2C2.1-3.6.86-.98%2C1.77-1.83%2C2.73-2.55s1.86-1.4%2C2.7-2.04%2C1.53-1.33%2C2.07-2.07c.54-.74.81-1.63.81-2.67%2C0-1.28-.41-2.33-1.23-3.15-.82-.82-1.99-1.23-3.51-1.23-1.72%2C0-3.05.47-3.99%2C1.41s-1.53%2C2.39-1.77%2C4.35h-9.18c.56-4.04%2C2.14-7.23%2C4.74-9.57s6.04-3.51%2C10.32-3.51c3%2C0%2C5.53.54%2C7.59%2C1.62%2C2.06%2C1.08%2C3.61%2C2.52%2C4.65%2C4.32%2C1.04%2C1.8%2C1.56%2C3.74%2C1.56%2C5.82Zm-20.64%2C30v-8.16h9.66v8.16h-9.66Z%22/%3E%3C/svg%3E';
-
-function loadConfig() {
-    return {
-        TIPPLY_USER_ID: localStorage.getItem('tipply_user_id') || "",
-        SE_JWT_TOKEN: localStorage.getItem('se_jwt_token') || "",
-        CURRENCY: "PLN"
-    };
-}
-
-function formatTipplyID(url) {
-    if (!url) return null;
-    const regex = /\/([^\/]+)$/;
-    const match = url.match(regex);
-    return match ? match[1] : null;
-}
-
-function saveConfig(tipplyId, seToken) {
-    localStorage.setItem('tipply_user_id', tipplyId);
-    localStorage.setItem('se_jwt_token', seToken);
-}
-
+let unknownAvatar = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22100%22%20height%3D%22100%22%20viewBox%3D%220%200%20100%20100%22%3E%3Cdefs%3E%3Cstyle%3E.b%7Bfill%3A%23fff%3B%7D.c%7Bfill%3A%233b404c%3B%7D.d%7Bfill%3A%23596172%3B%7D%3C/style%3E%3C/defs%3E%3Ccircle%20class%3D%22c%22%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2248.5%22/%3E%3Cpath%20class%3D%22d%22%20d%3D%22m50%2C3c25.92%2C0%2C47%2C21.08%2C47%2C47s-21.08%2C47-47%2C47S3%2C75.92%2C3%2C50%2C24.08%2C3%2C50%2C3m0-3C22.39%2C0%2C0%2C22.39%2C0%2C50s22.39%2C50%2C50%2C50%2C50-22.39%2C50-50S77.61%2C0%2C50%2C0h0Z%22/%3E%3Cpath%20class%3D%22b%22%20d%3D%22m64.04%2C41.6c0%2C1.64-.27%2C3.04-.81%2C4.2s-1.23%2C2.15-2.07%2C2.97-1.74%2C1.59-2.7%2C2.31c-.96.72-1.87%2C1.46-2.73%2C2.22s-1.56%2C1.65-2.1%2C2.67c-.54%2C1.02-.81%2C2.25-.81%2C3.69h-9.18c0-2.04.27-3.77.81-5.19.54-1.42%2C1.24-2.62%2C2.1-3.6.86-.98%2C1.77-1.83%2C2.73-2.55s1.86-1.4%2C2.7-2.04%2C1.53-1.33%2C2.07-2.07c.54-.74.81-1.63.81-2.67%2C0-1.28-.41-2.33-1.23-3.15-.82-.82-1.99-1.23-3.51-1.23-1.72%2C0-3.05.47-3.99%2C1.41s-1.53%2C2.39-1.77%2C4.35h-9.18c.56-4.04%2C2.14-7.23%2C4.74-9.57s6.04-3.51%2C10.32-3.51c3%2C0%2C5.53.54%2C7.59%2C1.62%2C2.06%2C1.08%2C3.61%2C2.52%2C4.65%2C4.32%2C1.04%2C1.8%2C1.56%2C3.74%2C1.56%2C5.82Zm-20.64%2C30v-8.16h9.66v8.16h-9.66Z%22/%3E%3C/svg%3E';
+let socket = null;
+let tokenWorker = null;
+let errorTimeout = null;
 const CONFIG = loadConfig();
 const DOM = {
     jwtInfoContainer: document.getElementById('jwtInfoContainer'),
@@ -38,11 +20,7 @@ const DOM = {
     mainContainer: document.getElementById('mainContainer')
 };
 
-DOM.avatar.src = unkownAvatar;
-
-let socket = null;
-let tokenWorker = null;
-let errorTimeout = null;
+DOM.avatar.src = unknownAvatar;
 
 function setupEventListeners() {
     DOM.configBtn.addEventListener('click', () => {
@@ -82,7 +60,7 @@ function setupEventListeners() {
                 DOM.seLink.textContent = originalText;
                 DOM.seLink.classList.remove('copied');
                 isCopying = false;
-            }, 500);
+            }, 700);
         }).catch(() => {
             isCopying = false;
         });
@@ -91,6 +69,26 @@ function setupEventListeners() {
     window.addEventListener('beforeunload', () => {
         clearTimeout(errorTimeout);
     });    
+}
+
+function loadConfig() {
+    return {
+        TIPPLY_USER_ID: localStorage.getItem('tipply_user_id') || "",
+        SE_JWT_TOKEN: localStorage.getItem('se_jwt_token') || "",
+        CURRENCY: "PLN"
+    };
+}
+
+function formatTipplyID(url) {
+    if (!url) return null;
+    const regex = /\/([^\/]+)$/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+}
+
+function saveConfig(tipplyId, seToken) {
+    localStorage.setItem('tipply_user_id', tipplyId);
+    localStorage.setItem('se_jwt_token', seToken);
 }
 
 function showConfig() {
@@ -220,7 +218,15 @@ function connectToTipply() {
     socket.on("disconnect", () => updateStatus("Rozłączono", false));
     socket.on("reconnecting", (attempt) => updateStatus(`Próba połączenia (${attempt})`, false));
     socket.on("reconnect_failed", () => updateStatus("Błąd połączenia", false));
-    socket.on("tip", (data) => sendTipToSE(JSON.parse(data)));
+    socket.on("tip", (data) => {
+        try {
+            const tip = JSON.parse(data);
+            sendTipToSE(tip);
+        } catch (e) {
+            console.error("Nieprawidłowy JSON z Tipply:", e);
+        }
+    });
+
 }
 
 async function sendTipToSE(tip, maxRetries = 2) {
@@ -301,7 +307,7 @@ async function validateToken(maxRetries = 3) {
 
             const data = await response.json();
             CONFIG.SE_CHANNEL_ID = data._id;
-            DOM.avatar.src = data.avatar || unkownAvatar;
+            DOM.avatar.src = data.avatar || unknownAvatar;
             DOM.username.textContent = data.displayName || 'username';
 
             return true;
