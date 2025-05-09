@@ -1,9 +1,7 @@
 name: Build Combined HTML
 
 on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:  # Dodaj to, aby umożliwić ręczne uruchomienie
+  workflow_dispatch: 
 
 jobs:
   build:
