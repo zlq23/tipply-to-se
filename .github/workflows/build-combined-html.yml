@@ -1,0 +1,30 @@
+name: Build Combined HTML
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Run build script
+        run: |
+          node .github/workflows/build.js  
+
+      - name: Commit and push combined HTML
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add tipply-to-se.html 
+          git commit -m "Auto-build combined HTML"
+          git push
