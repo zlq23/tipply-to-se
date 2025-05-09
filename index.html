@@ -3,40 +3,42 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Tipply → SE</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div id="mainContainer">
-        <button id="configBtn"></button>
-        <div id="userContainer">
-            <img id="avatar">
-            <div id="username">username</div>
-        </div>
-        <div id="statusContainer">Status</div>
-        <div id="jwtInfoContainer">
-            <div id="infoGeneral">Ładowanie...</div>
-            <div id="infoExpiry"></div>
-        </div>
-    </div>
-
-    <div id="configOverlay">
-        <div id="configForm">
-            <label for="tipplyId">Tipply URL</label>
-            <input type="password" id="tipplyId">
-
-            <label for="seToken">SE JWT Token</label>
-            <input type="password" id="seToken">
-            <div id="seLink">&gt; link do tokenu &lt;</div>
-
-            <div id="buttonsContainer">
-                <button id="saveConfig">Zapisz</button>
-                <button id="closeConfig">Wyjdź</button>
+    <div id="appWrapper">
+        <div id="mainContainer">
+            <button id="configBtn"></button>
+            <div id="userContainer">
+                <img id="avatar">
+                <div id="username">username</div>
             </div>
-
+            <div id="statusContainer">Status</div>
+            <div id="jwtInfoContainer">
+                <div id="infoGeneral">Ładowanie...</div>
+                <div id="infoExpiry"></div>
+            </div>
         </div>
+
+        <div id="configOverlay">
+            <div id="configForm">
+                <label for="tipplyId">Tipply URL</label>
+                <input type="password" id="tipplyId">
+
+                <label for="seToken">SE JWT Token</label>
+                <input type="password" id="seToken">
+                <div id="seLink">&gt; link do tokenu &lt;</div>
+
+                <div id="buttonsContainer">
+                    <button id="saveConfig">Zapisz</button>
+                    <button id="closeConfig">Wyjdź</button>
+                </div>
+
+            </div>
+        </div>        
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2.4.0/dist/socket.io.js"></script>
