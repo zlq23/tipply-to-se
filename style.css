@@ -12,6 +12,8 @@ body {
     word-wrap: break-word;
     font-size: 14px;
     overflow-x: hidden;
+    box-sizing: border-box;
+    border: 1px solid #3c404d;
 }
 
 #mainContainer {
