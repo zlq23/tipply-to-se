@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Tipply → SE</title>
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #272a33;
+    color: white;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    word-wrap: break-word;
+    font-size: 14px;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+#appWrapper{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    border: 1px solid #3c404d;
+    box-sizing: border-box;
+}
+
+#mainContainer {
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: visible;
+}
+
+#userContainer{
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    gap: 5px;
+}
+
+#statusContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    width: 180px;
+    height: 30px;
+    box-sizing: border-box;
+    background: #3b404c;
+    border: 1px solid #596172;
+}
+
+#statusContainer.connected {
+    background: #2a7758;
+    border: 1px solid #37996f;
+}
+
+#statusContainer.disconnected {
+    background: #ad2d2d;
+    border: 1px solid #d9534f;
+}
+
+#infoGeneral{
+    text-align: center;
+}
+
+#infoExpiry{
+    font-weight: bold;
+    text-align: center;
+}
+
+#infoExpiry.warning {
+    color: rgb(255, 185, 128);
+}
+
+#infoExpiry.expired {
+    color: #d65f5f;
+}
+
+#jwtInfoContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.refresh-link {
+    color: rgb(255, 185, 128);
+}
+
+#avatar {
+    height: 40px;
+    width: auto;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+#configBtn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: url('data:image/svg+xml,<svg fill="%23ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="%23ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M4,13.743l-1,.579a1,1,0,0,0-.366,1.366l1.488,2.578a1,1,0,0,0,1.366.366L6.5,18.05a1.987,1.987,0,0,1,1.986,0l.02.011a1.989,1.989,0,0,1,1,1.724V21a1,1,0,0,0,1,1h3a1,1,0,0,0,1-1V19.782a1.985,1.985,0,0,1,.995-1.721l.021-.012a1.987,1.987,0,0,1,1.986,0l1.008.582a1,1,0,0,0,1.366-.366l1.488-2.578A1,1,0,0,0,21,14.322l-1-.579a1.994,1.994,0,0,1-1-1.733v-.021a1.991,1.991,0,0,1,1-1.732l1-.579a1,1,0,0,0,.366-1.366L19.876,5.734a1,1,0,0,0-1.366-.366L17.5,5.95a1.987,1.987,0,0,1-1.986,0L15.5,5.94a1.989,1.989,0,0,1-1-1.724V3a1,1,0,0,0-1-1h-3a1,1,0,0,0-1,1V4.294A1.856,1.856,0,0,1,8.57,5.9l-.153.088a1.855,1.855,0,0,1-1.853,0L5.49,5.368a1,1,0,0,0-1.366.366L2.636,8.312A1,1,0,0,0,3,9.678l1,.579A1.994,1.994,0,0,1,5,11.99v.021A1.991,1.991,0,0,1,4,13.743ZM12,9a3,3,0,1,1-3,3A3,3,0,0,1,12,9Z"></path></g></svg>');
+    cursor: pointer;
+    outline: none;
+    border: none;
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 20px;
+    height: 20px;
+}
+
+@media (min-width: 400px) or (min-height: 300px) {
+    #configBtn {
+        position: absolute;
+        top: -16px;
+    }  
+}
+
+@media (max-height: 205px) {
+    #avatar {
+        display: none;
+    }
+
+    #configBtn {
+        position: fixed;
+        top: unset;
+        bottom: 10px;
+        width: 15px;
+        height: 15px;
+    }
+
+}
+
+@media (max-height: 115px) {
+    #username {
+        display: none;
+    }
+}
+
+@media (max-height: 90px) {
+    #statusContainer{
+        color: transparent;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        overflow: hidden;
+        user-select: none;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+    }
+
+    #configBtn {
+        top: 10px;
+        width: 15px;
+        height: 15px;
+    }
+
+    #mainContainer{
+        gap: 0px;
+    }
+}
+
+#seLink{
+    font-size: 12px;
+    color: #bbb;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+#seLink.copied{
+    color: #37996f;
+}
+
+#configOverlay {
+    position: absolute;
+    width: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    background: #272a33;
+    display: none;
+    justify-content: center;
+    align-items: flex-start;
+    z-index: 100;
+    scrollbar-gutter: stable both-edges;
+}
+
+#configForm {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#configForm label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#configForm input {
+    width: 150px;
+    height: 20px;
+    background: #3b404c;
+    border: 1px solid #596172;
+    color: white;
+    outline: none;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+#tipplyId{
+    margin-bottom: 20px;
+}
+
+#seToken{
+    margin-bottom: 10px;
+}
+
+#buttonsContainer{
+    display: flex;
+    gap: 10px;
+}
+
+#buttonsContainer button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 20px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.1s;
+}
+
+#buttonsContainer button:hover{
+    filter: brightness(0.9);
+}
+
+#saveConfig{
+    background: #2a7758;
+    border: 1px solid #37996f;
+}
+
+#closeConfig{
+    background: #ad2d2d;
+    border: 1px solid #d9534f;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #15171c; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: #61697f; 
+  border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6d768f; 
+}
+
+</style>
+</head>
+
+<body>
+    <div id="appWrapper">
+        <div id="mainContainer">
+            <button id="configBtn"></button>
+            <div id="userContainer">
+                <img id="avatar">
+                <div id="username">username</div>
+            </div>
+            <div id="statusContainer">Status</div>
+            <div id="jwtInfoContainer">
+                <div id="infoGeneral">Ładowanie...</div>
+                <div id="infoExpiry"></div>
+            </div>
+        </div>
+
+        <div id="configOverlay">
+            <div id="configForm">
+                <label for="tipplyId">Tipply URL</label>
+                <input type="password" id="tipplyId">
+
+                <label for="seToken">SE JWT Token</label>
+                <input type="password" id="seToken">
+                <div id="seLink">&gt; link do tokenu &lt;</div>
+
+                <div id="buttonsContainer">
+                    <button id="saveConfig">Zapisz</button>
+                    <button id="closeConfig">Wyjdź</button>
+                </div>
+
+            </div>
+        </div>        
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2.4.0/dist/socket.io.js"></script>
+    <script>
+let unkownAvatar = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22100%22%20height%3D%22100%22%20viewBox%3D%220%200%20100%20100%22%3E%3Cdefs%3E%3Cstyle%3E.b%7Bfill%3A%23fff%3B%7D.c%7Bfill%3A%233b404c%3B%7D.d%7Bfill%3A%23596172%3B%7D%3C/style%3E%3C/defs%3E%3Ccircle%20class%3D%22c%22%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2248.5%22/%3E%3Cpath%20class%3D%22d%22%20d%3D%22m50%2C3c25.92%2C0%2C47%2C21.08%2C47%2C47s-21.08%2C47-47%2C47S3%2C75.92%2C3%2C50%2C24.08%2C3%2C50%2C3m0-3C22.39%2C0%2C0%2C22.39%2C0%2C50s22.39%2C50%2C50%2C50%2C50-22.39%2C50-50S77.61%2C0%2C50%2C0h0Z%22/%3E%3Cpath%20class%3D%22b%22%20d%3D%22m64.04%2C41.6c0%2C1.64-.27%2C3.04-.81%2C4.2s-1.23%2C2.15-2.07%2C2.97-1.74%2C1.59-2.7%2C2.31c-.96.72-1.87%2C1.46-2.73%2C2.22s-1.56%2C1.65-2.1%2C2.67c-.54%2C1.02-.81%2C2.25-.81%2C3.69h-9.18c0-2.04.27-3.77.81-5.19.54-1.42%2C1.24-2.62%2C2.1-3.6.86-.98%2C1.77-1.83%2C2.73-2.55s1.86-1.4%2C2.7-2.04%2C1.53-1.33%2C2.07-2.07c.54-.74.81-1.63.81-2.67%2C0-1.28-.41-2.33-1.23-3.15-.82-.82-1.99-1.23-3.51-1.23-1.72%2C0-3.05.47-3.99%2C1.41s-1.53%2C2.39-1.77%2C4.35h-9.18c.56-4.04%2C2.14-7.23%2C4.74-9.57s6.04-3.51%2C10.32-3.51c3%2C0%2C5.53.54%2C7.59%2C1.62%2C2.06%2C1.08%2C3.61%2C2.52%2C4.65%2C4.32%2C1.04%2C1.8%2C1.56%2C3.74%2C1.56%2C5.82Zm-20.64%2C30v-8.16h9.66v8.16h-9.66Z%22/%3E%3C/svg%3E';
+
+function loadConfig() {
+    return {
+        TIPPLY_USER_ID: localStorage.getItem('tipply_user_id') || "",
+        SE_JWT_TOKEN: localStorage.getItem('se_jwt_token') || "",
+        CURRENCY: "PLN"
+    };
+}
+
+function formatTipplyID(url) {
+    if (!url) return null;
+    const regex = /\/([^\/]+)$/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+}
+
+function saveConfig(tipplyId, seToken) {
+    localStorage.setItem('tipply_user_id', tipplyId);
+    localStorage.setItem('se_jwt_token', seToken);
+}
+
+const CONFIG = loadConfig();
+const DOM = {
+    jwtInfoContainer: document.getElementById('jwtInfoContainer'),
+    jwtInfoGeneral: document.getElementById('infoGeneral'),
+    jwtInfoExpiry: document.getElementById('infoExpiry'),        
+    status: document.getElementById('statusContainer'),
+    avatar: document.getElementById('avatar'),
+    username: document.getElementById('username'),
+    configBtn: document.getElementById('configBtn'),
+    configOverlay: document.getElementById('configOverlay'),
+    tipplyIdInput: document.getElementById('tipplyId'),
+    seTokenInput: document.getElementById('seToken'),
+    saveConfigBtn: document.getElementById('saveConfig'),
+    closeConfigBtn: document.getElementById('closeConfig'),
+    seLink: document.getElementById('seLink'),
+    mainContainer: document.getElementById('mainContainer')
+};
+
+DOM.avatar.src = unkownAvatar;
+
+let socket = null;
+let tokenWorker = null;
+let errorTimeout = null;
+
+function setupEventListeners() {
+    DOM.configBtn.addEventListener('click', () => {
+        DOM.tipplyIdInput.value = CONFIG.TIPPLY_USER_ID;
+        DOM.seTokenInput.value = CONFIG.SE_JWT_TOKEN;
+        showConfig();  
+    });
+
+    DOM.saveConfigBtn.addEventListener('click', () => {
+        const tipplyId = DOM.tipplyIdInput.value.trim();
+        const seToken = DOM.seTokenInput.value.trim();
+
+        if (tipplyId === CONFIG.TIPPLY_USER_ID && seToken === CONFIG.SE_JWT_TOKEN) {
+            hideConfig();
+            return;
+        }
+
+        saveConfig(tipplyId, seToken);
+        hideConfig();
+        location.reload();
+    });
+
+    DOM.closeConfigBtn.addEventListener('click', () => {
+        hideConfig();
+    });
+
+    let isCopying = false;
+    DOM.seLink.addEventListener('click', () => {
+        if (isCopying) return;
+        isCopying = true;
+        const originalText = DOM.seLink.textContent;
+
+        navigator.clipboard.writeText('https://streamelements.com/dashboard/account/channels').then(() => {
+            DOM.seLink.textContent = "skopiowano do schowka";
+            DOM.seLink.classList.add('copied');
+            setTimeout(() => {
+                DOM.seLink.textContent = originalText;
+                DOM.seLink.classList.remove('copied');
+                isCopying = false;
+            }, 500);
+        }).catch(() => {
+            isCopying = false;
+        });
+    });
+
+    window.addEventListener('beforeunload', () => {
+        clearTimeout(errorTimeout);
+    });    
+}
+
+function showConfig() {
+    DOM.configOverlay.style.display = 'flex';
+    DOM.mainContainer.style.display = 'none';
+}
+
+function hideConfig() {
+    DOM.configOverlay.style.display = 'none';
+    DOM.mainContainer.style.display = 'flex';
+}
+
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        return JSON.parse(atob(base64));
+    } catch (e) {
+        return null;
+    }
+}
+
+function updateStatus(text, isConnected) {
+    DOM.status.textContent = text;
+    DOM.status.className = isConnected ? 'connected' : 'disconnected';
+}
+
+function formatTime(ms) {
+    const seconds = Math.floor((ms / 1000) % 60);
+    const minutes = Math.floor((ms / (1000 * 60)) % 60);
+    const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
+    const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+
+    return { days, hours, minutes, seconds };
+}
+
+function updateTokenDisplay(totalMs) {
+    const time = formatTime(totalMs);
+    let displayText = totalMs < 86400000 ? 
+        `${time.hours}h ${time.minutes}m ${time.seconds}s` : 
+        `${time.days}d ${time.hours}h ${time.minutes}m`;
+    
+    DOM.jwtInfoGeneral.textContent = 'Token wygaśnie za:';
+    DOM.jwtInfoExpiry.textContent = displayText;
+    DOM.jwtInfoExpiry.className = time.days <= 7 ? 'warning' : 'ok';
+}
+
+function createWorker() {
+    const workerCode = `
+        self.onmessage = function(e) {
+            const expiry = e.data.expiry;
+            let isFinalDay = false;
+            
+            const check = () => {
+                const now = Date.now();
+                const diff = expiry - now;
+                
+                if (diff <= 0) {
+                    postMessage({ expired: true });
+                    clearInterval(interval);
+                    return;
+                }
+                
+                if (!isFinalDay && diff < 86400000) {
+                    isFinalDay = true;
+                    clearInterval(interval);
+                    interval = setInterval(check, 1000);
+                }
+                
+                postMessage({ 
+                    totalMs: diff,
+                    expired: false 
+                });
+            };
+            
+            let interval = setInterval(check, 60000);
+            check();
+        };
+    `;
+    
+    const blob = new Blob([workerCode], { type: 'application/javascript' });
+    return new Worker(URL.createObjectURL(blob));
+}
+
+function startTokenWorker(expiryTimestamp) {
+    if (tokenWorker) tokenWorker.terminate();
+    
+    tokenWorker = createWorker();
+    tokenWorker.postMessage({ expiry: expiryTimestamp });
+    
+    tokenWorker.onmessage = (e) => {
+        if (e.data.expired) {
+            handleTokenExpired();
+        } else {
+            updateTokenDisplay(e.data.totalMs);
+        }
+    };
+}
+
+function handleTokenExpired() {
+    DOM.jwtInfoGeneral.innerHTML = 'Zaktualizuj token <br> w <span style="font-weight: bold">ustawieniach</span>';
+    DOM.jwtInfoExpiry.textContent = '';
+    updateStatus("Token wygasł", false);
+    disconnectSocket();
+    if (tokenWorker) {
+        tokenWorker.terminate();
+        tokenWorker = null;
+    }
+}
+
+function disconnectSocket() {
+    if (socket) {
+        socket.disconnect();
+        socket = null;
+    }
+}
+
+function connectToTipply() {
+    disconnectSocket();
+
+    socket = io(`wss://ws.tipply.pl/tip/${formatTipplyID(CONFIG.TIPPLY_USER_ID)}`, {
+        path: "/socket.io",
+        transports: ["websocket"]
+    });
+
+    socket.on("connect", () => updateStatus("Połączono", true));
+    socket.on("disconnect", () => updateStatus("Rozłączono", false));
+    socket.on("reconnecting", (attempt) => updateStatus(`Próba połączenia (${attempt})`, false));
+    socket.on("reconnect_failed", () => updateStatus("Błąd połączenia", false));
+    socket.on("tip", (data) => sendTipToSE(JSON.parse(data)));
+}
+
+async function sendTipToSE(tip, maxRetries = 2) {
+    for (let retry = 0; retry < maxRetries; retry++) {
+        try {
+            const response = await fetch(`https://api.streamelements.com/kappa/v2/tips/${CONFIG.SE_CHANNEL_ID}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${CONFIG.SE_JWT_TOKEN}`,
+                },
+                body: JSON.stringify({
+                    user: {
+                        userId: tip.id || '',
+                        username: tip.nickname || 'Anonymous',
+                        email: tip.email || 'anonymous@tipply.pl',
+                    },
+                    provider: 'tipply',
+                    message: tip.message?.replace(/<img[^>]*alt="([^"]*)"[^>]*>/g, (_, alt) => alt) || '',
+                    amount: parseFloat((tip.amount / 100).toFixed(2)),
+                    currency: CONFIG.CURRENCY,
+                    imported: true,
+                }),
+                signal: AbortSignal.timeout(5000)
+            });
+        
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    
+            return true; 
+        } catch (error) {
+
+            if (error.message.includes("401")) {
+                updateStatus("Niepoprawny token SE", false);
+                return false;  
+            }
+
+            if (retry === maxRetries - 1) {
+                updateStatus("Błąd wysyłania tipa", false);
+                clearTimeout(errorTimeout); 
+                errorTimeout = setTimeout(() => {
+                    if (socket?.connected) {
+                        updateStatus("Połączono", true);
+                    }
+                }, 3000);
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+    }        
+}
+
+async function validateToken(maxRetries = 3) {
+    if (!CONFIG.SE_JWT_TOKEN || !CONFIG.TIPPLY_USER_ID) {
+        DOM.jwtInfoGeneral.innerHTML = 'Uzupełnij pola w <br><span style="font-weight: bold">ustawieniach</span>';
+        updateStatus("Brak konfiguracji", false);
+        return false;
+    }
+
+    const jwtData = parseJwt(CONFIG.SE_JWT_TOKEN);
+    if (!jwtData?.exp) {
+        handleTokenExpired();
+        return false;
+    }
+
+    for (let retry = 0; retry < maxRetries; retry++) {
+        try {
+            const response = await fetch('https://api.streamelements.com/kappa/v2/channels/me', {
+                headers: {
+                    'Authorization': `Bearer ${CONFIG.SE_JWT_TOKEN}`,
+                    'Accept': 'application/json'
+                },
+                signal: AbortSignal.timeout(5000)
+            });
+
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            startTokenWorker(jwtData.exp * 1000);
+
+            const data = await response.json();
+            CONFIG.SE_CHANNEL_ID = data._id;
+            DOM.avatar.src = data.avatar || unkownAvatar;
+            DOM.username.textContent = data.displayName || 'username';
+
+            return true;
+        } catch (error) {
+
+            if (error.message.includes("401")) {
+                updateStatus("Niepoprawny token SE", false);
+                DOM.jwtInfoGeneral.innerHTML = 'Zaktualizuj token <br> w <span style="font-weight: bold">ustawieniach</span>';
+                return false;  
+            }
+            
+            if (retry === maxRetries - 1) {
+                updateStatus( "Błąd połączenia z SE", false);
+                DOM.jwtInfoGeneral.innerHTML = 'Zrestartuj aplikacje: <br> prawy myszki > odśwież';
+                return false;
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+    }
+}
+
+function init() {
+    setupEventListeners();
+    validateToken().then(isValid => isValid && connectToTipply());
+}
+
+init();
+
+</script>
+</body>
+
+</html>
