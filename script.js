@@ -1,3 +1,5 @@
+let unkownAvatar = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22100%22%20height%3D%22100%22%20viewBox%3D%220%200%20100%20100%22%3E%3Cdefs%3E%3Cstyle%3E.b%7Bfill%3A%23fff%3B%7D.c%7Bfill%3A%233b404c%3B%7D.d%7Bfill%3A%23596172%3B%7D%3C/style%3E%3C/defs%3E%3Ccircle%20class%3D%22c%22%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2248.5%22/%3E%3Cpath%20class%3D%22d%22%20d%3D%22m50%2C3c25.92%2C0%2C47%2C21.08%2C47%2C47s-21.08%2C47-47%2C47S3%2C75.92%2C3%2C50%2C24.08%2C3%2C50%2C3m0-3C22.39%2C0%2C0%2C22.39%2C0%2C50s22.39%2C50%2C50%2C50%2C50-22.39%2C50-50S77.61%2C0%2C50%2C0h0Z%22/%3E%3Cpath%20class%3D%22b%22%20d%3D%22m64.04%2C41.6c0%2C1.64-.27%2C3.04-.81%2C4.2s-1.23%2C2.15-2.07%2C2.97-1.74%2C1.59-2.7%2C2.31c-.96.72-1.87%2C1.46-2.73%2C2.22s-1.56%2C1.65-2.1%2C2.67c-.54%2C1.02-.81%2C2.25-.81%2C3.69h-9.18c0-2.04.27-3.77.81-5.19.54-1.42%2C1.24-2.62%2C2.1-3.6.86-.98%2C1.77-1.83%2C2.73-2.55s1.86-1.4%2C2.7-2.04%2C1.53-1.33%2C2.07-2.07c.54-.74.81-1.63.81-2.67%2C0-1.28-.41-2.33-1.23-3.15-.82-.82-1.99-1.23-3.51-1.23-1.72%2C0-3.05.47-3.99%2C1.41s-1.53%2C2.39-1.77%2C4.35h-9.18c.56-4.04%2C2.14-7.23%2C4.74-9.57s6.04-3.51%2C10.32-3.51c3%2C0%2C5.53.54%2C7.59%2C1.62%2C2.06%2C1.08%2C3.61%2C2.52%2C4.65%2C4.32%2C1.04%2C1.8%2C1.56%2C3.74%2C1.56%2C5.82Zm-20.64%2C30v-8.16h9.66v8.16h-9.66Z%22/%3E%3C/svg%3E';
+
 function loadConfig() {
     return {
         TIPPLY_USER_ID: localStorage.getItem('tipply_user_id') || "",
@@ -35,8 +37,11 @@ const DOM = {
     seLink: document.getElementById('seLink')
 };
 
+DOM.avatar.src = unkownAvatar;
+
 let socket = null;
 let tokenWorker = null;
+let errorTimeout = null;
 
 function setupEventListeners() {
     DOM.configBtn.addEventListener('click', () => {
@@ -81,6 +86,10 @@ function setupEventListeners() {
             isCopying = false;
         });
     });
+
+    window.addEventListener('beforeunload', () => {
+        clearTimeout(errorTimeout);
+    });    
 }
 
 function parseJwt(token) {
@@ -203,38 +212,61 @@ function connectToTipply() {
     socket.on("tip", (data) => sendTipToSE(JSON.parse(data)));
 }
 
-async function sendTipToSE(tip) {
-    try {
-        await fetch(`https://api.streamelements.com/kappa/v2/tips/${CONFIG.SE_CHANNEL_ID}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${CONFIG.SE_JWT_TOKEN}`,
-            },
-            body: JSON.stringify({
-                user: {
-                    userId: tip.id || '',
-                    username: tip.nickname || 'Anonymous',
-                    email: tip.email || 'anonymous@tipply.pl',
+async function sendTipToSE(tip, maxRetries = 2) {
+    for (let retry = 0; retry < maxRetries; retry++) {
+        try {
+            const response = await fetch(`https://api.streamelements.com/kappa/v2/tips/${CONFIG.SE_CHANNEL_ID}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${CONFIG.SE_JWT_TOKEN}`,
                 },
-                provider: 'tipply',
-                message: tip.message?.replace(/<img[^>]*alt="([^"]*)"[^>]*>/g, (_, alt) => alt) || '',
-                amount: parseFloat((tip.amount / 100).toFixed(2)),
-                currency: CONFIG.CURRENCY,
-                imported: true,
-            })
-        });
-    } catch (error) {
-        updateStatus("Błąd wysyłania tipa", false);
-    }
+                body: JSON.stringify({
+                    user: {
+                        userId: tip.id || '',
+                        username: tip.nickname || 'Anonymous',
+                        email: tip.email || 'anonymous@tipply.pl',
+                    },
+                    provider: 'tipply',
+                    message: tip.message?.replace(/<img[^>]*alt="([^"]*)"[^>]*>/g, (_, alt) => alt) || '',
+                    amount: parseFloat((tip.amount / 100).toFixed(2)),
+                    currency: CONFIG.CURRENCY,
+                    imported: true,
+                }),
+                signal: AbortSignal.timeout(5000)
+            });
+        
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    
+            return true; 
+        } catch (error) {
+
+            if (error.message.includes("401")) {
+                updateStatus("Niepoprawny token SE", false);
+                return false;  
+            }
+
+            if (retry === maxRetries - 1) {
+                updateStatus("Błąd wysyłania tipa", false);
+                clearTimeout(errorTimeout); 
+                errorTimeout = setTimeout(() => {
+                    if (socket?.connected) {
+                        updateStatus("Połączono", true);
+                    }
+                }, 3000);
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+    }        
 }
 
-async function validateToken() {
+async function validateToken(maxRetries = 3) {
     if (!CONFIG.SE_JWT_TOKEN || !CONFIG.TIPPLY_USER_ID) {
         DOM.jwtInfoGeneral.innerHTML = 'Uzupełnij pola w <br><span style="font-weight: bold">ustawieniach</span>';
         updateStatus("Brak konfiguracji", false);
         return false;
-    } 
+    }
 
     const jwtData = parseJwt(CONFIG.SE_JWT_TOKEN);
     if (!jwtData?.exp) {
@@ -242,27 +274,42 @@ async function validateToken() {
         return false;
     }
 
-    startTokenWorker(jwtData.exp * 1000);
+    for (let retry = 0; retry < maxRetries; retry++) {
+        try {
+            const response = await fetch('https://api.streamelements.com/kappa/v2/channels/me', {
+                headers: {
+                    'Authorization': `Bearer ${CONFIG.SE_JWT_TOKEN}`,
+                    'Accept': 'application/json'
+                },
+                signal: AbortSignal.timeout(5000)
+            });
 
-    try {
-        const response = await fetch('https://api.streamelements.com/kappa/v2/channels/me', {
-            headers: {
-                'Authorization': `Bearer ${CONFIG.SE_JWT_TOKEN}`,
-                'Accept': 'application/json'
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            startTokenWorker(jwtData.exp * 1000);
+
+            const data = await response.json();
+            CONFIG.SE_CHANNEL_ID = data._id;
+            DOM.avatar.src = data.avatar || unkownAvatar;
+            DOM.username.textContent = data.displayName || 'username';
+
+            return true;
+        } catch (error) {
+
+            if (error.message.includes("401")) {
+                updateStatus("Niepoprawny token SE", false);
+                DOM.jwtInfoGeneral.innerHTML = 'Zaktualizuj token <br> w <span style="font-weight: bold">ustawieniach</span>';
+                return false;  
             }
-        });
-
-        if (!response.ok) throw new Error("Invalid token");
-
-        const data = await response.json();
-        CONFIG.SE_CHANNEL_ID = data._id;
-        DOM.avatar.src = data.avatar || `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAACc5JREFUeNrsnU9MXEUcx4cNhSJQFkmBagyr1psG6kWNraxpE2tjWox/YnspkPTWWGIPttoDh9rqocmi9aKGbi818U8ED7UmNi5VEz2Vjd6sCjFaoEGgBSnQgO/7Om+dnZ19b97uvp3Z7fySyfJ23y77fp/9/ZuZN1OxtrZGdJV9vYfD1kMHbRH6iOfaJT8iabVZq41abQyP5wZPJYjGUqETEAogyrT2gP4VQCWcZkGaNUDSIXTRtkfR1xi22hCaajjKgFggYAHdVtvvde7q6ipZWV4iy8s37b+Xl5bImvXoemGhEKmqriYhPFatJ+uqbv8tIWetFlfl2ooOxAIBCH1u7ujWrRWy+O88ubm4aIPAcSGksnKdDWZ9TQ2puavOPvZwazELTLwsgVAQ/VZrE72+bCl+4cZ1G0ShAMgAApja+g2WFVVnO20c37tYYAIHQl0TQHSKXNHC/By5MTdbNAhucOobwqS2riGbaxuhYBIlCYQG65goRkD5czPTtjWsesSCYgtgwGoaGpuyuTTEmL6ggn8gQCwYyJhg4g0iEAvz10kpSG3dhmxg5pCQWFCGtAZCrQLu6VDGFcxOW65pRjuLkLGY+oZG0hBuEr08QN3YrHZALBgRmsunZU9LNxfJ9LUJ5TGiEDGmaWMrqV5fI8rGuiwoY9oAsWB00Kq3gQ3YcE83rs+QcpL6DY22G+MCP1xY1IIyqhwITWfP8CnsP5ZV4LEcBSny3Za1CFLlnnzT47yAiGAgYM9MT5VcrMgltjQ2NduBv5BQcgYigoHADTd1JwnclyDg5wwlJyAiGAjcpZLOBpEeI+AXAkrIwMhfcO3QASdnqK6CsxCaTV02MHxZyhY/2VfIB4wITW0NDH+WkqC6KxwQWoEPsXUGAriBIYYC3bBxH7qjOiyYhfSzFbj9T++wbMqPCPrr2qkO848htKPwC7bom7r6Z9nXGYWoU5o33ccXj897dUi6AqFmNua4KkAAjHKtwIOo6AGF6WZBF0vErTPSy2XF0uKGZYoGhrxAV5xrb/ByXVkthI70fesco9d20rIOI/6lxbISrpf46WwjjyGPQJ6W4hrJTQS66/flsmiF2cmmuKU+nqFS7JHS9FS4M1sVH/KyDnwYRvqM5CfQIfej7pcCQsm1sYHcpLj5izNgx0ibyEoqBe/tY61D52p8U2szaW1tyXj+8ujP2lbx3KQJ6DqeNcviMyvd+qoAYNvWJ8hTWx8nHe0Pu547MTllg7n0/Y/kO6vpIoIOyLSMi7eQbtbEMG9KFxC93fvIs89sl35Pa0uzfT4a4AzGz5HzFy4qvxZnLhpTLELniQwLoVV5KnpjcsLM9DXlF7Br53by6sEDpK62Nu/PGk3+Qo4cO07m5xeUXlNj00Z7sgT7lFO9s0G9Kz0rUH/LBKzijdf7CgIDAjd3OnaS1NXVKr0ugW67RFlWF1vyq647YBm9+/cW/HM3P3i/DUV1XcJ1QaUDoe4qdbMMZqGrlC0dj9iWEZQACqxPacaVruM9zniJYyFRPvColDeP9AX+P15+cbdS1yXQcZTNsqKsOal0V3BVyJBkBNkTMien7nho8wP2+2EBXoK4tGvnDvLJZ8PK3BYaU5OAwVAGENXWIetK3n3/owxlAgyeg4XJpMiApwqIo2sm24qyLis1PIvbyFQJfuEy1vHdDz+5KvKtt2N2iisTS1QKp2ubQYhW5ylZUTgAtc2qwKWs4/QHnuecv/CNdNGpSnhdgwUspIOtzlXGj0et7MpLrvz2B7k6MeV5nsw5dkUv6AsrZhzhOm47ACSig3XYLmSztwuR7TiU/eWrrto5nUcqWQvBfeAqZedzrxQwW9shdd6vV35Xes3QOTO8a1tImHVZ5SDInrx6g520WbVwOg+H2AwLKySUAwzZKl+HbnlO5+1p3e9rJW4hhw4eIC+9sFsudiwsKK1Bsum8shxcFAL4yePHfNUVg/GPpTOxYkrJA0Ex+V7shK8u+q++vqiFdYgkVMowUEjmAgOVvK5SyRcq5Ri8HTnxTkyLYVxpIOh5LAUocFN+YCCAwyp0muxQVjHEz3gJuloAQ3UBWLZAZMc7HBgH+44q7x7JOahXhPSP8ZiXVU4weJ3jKOkcYI1CnQVDrtuefEzq3KMaTPeREU7nSQBJzUkJaW4hCOYy8unnX2pZ9AldVLrOZ3GUuocaq3fqXpHLyKUSyKay6HwUQMaco3VVerss2cEkXSdbi4TT+VglayEwH51rkYmJSamx8lIR6JpzWaMVe3teS5vTe23yb20mWZe7YLHNjS33pI7PDZ6qCNFJvqlMC4sMGymOcLpOsnVIgqVmpHgWwkiCrdRxcMjxa7rGEQxAyaS+A6c/1L6rxNGzG5A0cjouXgkYMmPlqm83yME6UgxCNJggjqRGbLAWupFghdPxsOiGnaH/i5Vqr50DjOTprrhFaVK6FwKBYGF6I8GIQLeZQKjJnE2ZVPZdAozkIdApdMvIWXZ1IF7jcfaNJgUOJphzP/R4GjD2gN4vnSoScZO7kcIKp9MkvyqQaMQQUzLOOMEHN7rrsniAbG2h6zgIdMklSxnTX4TrZe3rPTxG6HonKBAn/ho3650UIHa03tvGAhm3rCOScV6W9/ezKRr2zzCSb2bVyFtHvxCc6Em6RPZIyu+Fm0xdkmfdwa0PP5JtGXLpFeUEKzYbkRSB7vqzurZsL9Don6pLcFMJtz6HERlXZemMW29xwG2nN6/KDzPS5tiUrUrzYV6dBLri0tw54rEqqSsQWkF2s5kCdpYxFbxcViXQVbfXBmKemqUrMQ+w1LGzjBF3gY44bzIgs82en7Xfk2yBY6p492qc2wopSQq19jtTLKKIwQyVVM+Y2a5CXI1zWRXiRofstnrSwYB+YJRP5wSbYhkY6RL1s8ehr+hMd4rpMVCkYfT43dvQd7pEK0wDRQ5G3O9nmW3zChDAlW+b5wbFbCypaGNJNyhm69XcxWxO7FO035yYq1PM9t26AKFQzAb3OgFhwGBh4DjrwiD2xiYzpbP/odNFJBicg4vqlumb0gKIl7U4YJyF6XWzCEzVyQIiEKsoChAGTJSC6eRfA4yF+Tl7LXTVMeb23IGw2wTBEQoiEeT3CBwIlx4DTJvodaTIWH4bVlMsOIAAa8DEZ5eBt3EKIl6M71Q0IByYPj4b410awGBd25UCbgwAALjJEncuAYTHxA1kT7FigVAGhHNlgLPf61y4NoDBgpH4G8viea1+hxUScFM+3A9uPQYIyZFOzCOIB+2atAPCBf8u2vYo+hrDtIYaCipYlwwQAZwo09oD+ldJ2rNgN9UQtAXi4trQNROhj2EfoKB4KBtdGqikR1W5Iln5T4ABALDv/OSMKcoNAAAAAElFTkSuQmCC`; 
-        DOM.username.textContent = data.displayName || 'username';
-        
-        return true;
-    } catch (error) {
-        updateStatus("Niepoprawny SE token", false);
-        return false;
+            
+            if (retry === maxRetries - 1) {
+                updateStatus( "Błąd połączenia z SE", false);
+                DOM.jwtInfoGeneral.innerHTML = 'Zrestartuj aplikacje: <br> prawy myszki > odśwież';
+                return false;
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 2000));
+        }
     }
 }
 
