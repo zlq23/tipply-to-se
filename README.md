@@ -80,8 +80,6 @@ Jeśli wszystko działa powinniśmy zobaczyć testową donację w panelu aktywno
 0. Ogarnij kogoś do sprawdzenia legitności skryptu <img style="height: 20px; transform: translateY(5px);" src="https://cdn.7tv.app/emote/01GB3PQ1K8000CW87FDNNPRBZG/1x.avif"> 
 1. Pobierz potrzebne pliki projektu *(index.html, style.css, script.js)*  
 2. Umieść pobrane pliki w jednym folderze
-
-   ![Pliki aplikacji w folderze](https://i.imgur.com/8HdQeQX.png)  
 3. W OBS użyj ścieżki do pliku `index.html` zamiast linku (np. `C:/Users/User/Desktop/tipply/index.html`)
 
    ![Okno paneli przeglądarek OBS](https://i.imgur.com/PFUey2s.png)
