@@ -81,7 +81,7 @@ function setupEventListeners() {
                 DOM.seLink.textContent = originalText;
                 DOM.seLink.classList.remove('copied');
                 isCopying = false;
-            }, 2000);
+            }, 500);
         }).catch(() => {
             isCopying = false;
         });
