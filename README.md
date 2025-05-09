@@ -29,7 +29,7 @@ https://zlq23.github.io/tipply-to-se/
 
 ![Okno paneli przeglądarek OBS](https://i.imgur.com/J41tc0C.png)
 
-Alternatywnie można zrobić to lokalnie poprzez pobranie pliku `tipply-to-se.html`. W tym przypadku zamiast linku wystarczy wpisać scieżkę do tego pliku np. `C:/Users/User/Desktop/tipply-to-se.html`
+Alternatywnie można zrobić to lokalnie poprzez pobranie pliku [tipply-to-se.html](https://github.com/zlq23/tipply-to-se/blob/main/tipply-to-se.html). W tym przypadku zamiast linku wystarczy wpisać scieżkę do tego pliku np. `C:/Users/User/Desktop/tipply-to-se.html`
 
    ![Okno paneli przeglądarek OBS](https://i.imgur.com/RWGsFsp.png)
 
