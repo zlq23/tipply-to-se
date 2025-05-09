@@ -3,6 +3,7 @@ name: Build Combined HTML
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:  # Dodaj to, aby umożliwić ręczne uruchomienie
 
 jobs:
   build:
@@ -27,4 +28,4 @@ jobs:
           git config user.email "action@github.com"
           git add tipply-to-se.html 
           git commit -m "Auto-build combined HTML"
-          git push
+          git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
