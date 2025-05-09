@@ -106,7 +106,7 @@ body {
     position: fixed;
     top: 10px;
     right: 10px;
-    background: url('/assets/settings-icon.svg');
+    background: url('assets/settings-icon.svg');
     cursor: pointer;
     outline: none;
     border: none;
