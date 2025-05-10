@@ -2,6 +2,8 @@ let unknownAvatar = 'assets/unknown-avatar.svg';
 let socket = null;
 let tokenWorker = null;
 let errorTimeout = null;
+let tokenExpiryTimestamp = null;
+let tokenInterval = null;
 const CONFIG = loadConfig();
 const DOM = {
     jwtInfoContainer: document.getElementById('jwtInfoContainer'),
@@ -23,6 +25,13 @@ const DOM = {
 DOM.avatar.src = unknownAvatar;
 
 function setupEventListeners() {
+
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden && tokenExpiryTimestamp) {
+            startTokenCountdown(tokenExpiryTimestamp);
+        }
+    });
+
     DOM.configBtn.addEventListener('click', () => {
         DOM.tipplyIdInput.value = CONFIG.TIPPLY_USER_ID;
         DOM.seTokenInput.value = CONFIG.SE_JWT_TOKEN;
@@ -75,6 +84,7 @@ function loadConfig() {
     return {
         TIPPLY_USER_ID: localStorage.getItem('tipply_user_id') || "",
         SE_JWT_TOKEN: localStorage.getItem('se_jwt_token') || "",
+        SE_CHANNEL_ID: null,
         CURRENCY: "PLN"
     };
 }
@@ -136,56 +146,23 @@ function updateTokenDisplay(totalMs) {
     DOM.jwtInfoExpiry.className = time.days <= 7 ? 'warning' : 'ok';
 }
 
-function createWorker() {
-    const workerCode = `
-        self.onmessage = function(e) {
-            const expiry = e.data.expiry;
-            let isFinalDay = false;
-            
-            const check = () => {
-                const now = Date.now();
-                const diff = expiry - now;
-                
-                if (diff <= 0) {
-                    postMessage({ expired: true });
-                    clearInterval(interval);
-                    return;
-                }
-                
-                if (!isFinalDay && diff < 86400000) {
-                    isFinalDay = true;
-                    clearInterval(interval);
-                    interval = setInterval(check, 1000);
-                }
-                
-                postMessage({ 
-                    totalMs: diff,
-                    expired: false 
-                });
-            };
-            
-            let interval = setInterval(check, 60000);
-            check();
-        };
-    `;
-    
-    const blob = new Blob([workerCode], { type: 'application/javascript' });
-    return new Worker(URL.createObjectURL(blob));
-}
+function startTokenCountdown(expiryTimestamp) {
+    tokenExpiryTimestamp = expiryTimestamp;
+    if (tokenInterval) clearInterval(tokenInterval);
 
-function startTokenWorker(expiryTimestamp) {
-    if (tokenWorker) tokenWorker.terminate();
-    
-    tokenWorker = createWorker();
-    tokenWorker.postMessage({ expiry: expiryTimestamp });
-    
-    tokenWorker.onmessage = (e) => {
-        if (e.data.expired) {
+    const update = () => {
+        const diff = expiryTimestamp - Date.now();
+        if (diff <= 0) {
             handleTokenExpired();
+            clearInterval(tokenInterval);
+            tokenInterval = null;
         } else {
-            updateTokenDisplay(e.data.totalMs);
+            updateTokenDisplay(diff);
         }
     };
+
+    update();
+    tokenInterval = setInterval(update, 1000);
 }
 
 function handleTokenExpired() {
@@ -193,10 +170,6 @@ function handleTokenExpired() {
     DOM.jwtInfoExpiry.textContent = '';
     updateStatus("Token wygasł", false);
     disconnectSocket();
-    if (tokenWorker) {
-        tokenWorker.terminate();
-        tokenWorker = null;
-    }
 }
 
 function disconnectSocket() {
@@ -267,9 +240,7 @@ async function sendTipToSE(tip, maxRetries = 2) {
                 updateStatus("Błąd wysyłania tipa", false);
                 clearTimeout(errorTimeout); 
                 errorTimeout = setTimeout(() => {
-                    if (socket?.connected) {
-                        updateStatus("Połączono", true);
-                    }
+                    updateStatus(socket?.connected ? "Połączono" : "Rozłączono", !!socket?.connected);
                 }, 3000);
             }
 
@@ -291,6 +262,8 @@ async function validateToken(maxRetries = 3) {
         return false;
     }
 
+    tokenExpiryTimestamp = jwtData.exp * 1000;
+
     for (let retry = 0; retry < maxRetries; retry++) {
         try {
             const response = await fetch('https://api.streamelements.com/kappa/v2/channels/me', {
@@ -303,12 +276,12 @@ async function validateToken(maxRetries = 3) {
 
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-            startTokenWorker(jwtData.exp * 1000);
-
             const data = await response.json();
             CONFIG.SE_CHANNEL_ID = data._id;
             DOM.avatar.src = data.avatar || unknownAvatar;
             DOM.username.textContent = data.displayName || 'username';
+
+            startTokenCountdown(tokenExpiryTimestamp);
 
             return true;
         } catch (error) {
