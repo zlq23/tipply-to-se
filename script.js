@@ -24,6 +24,15 @@ const DOM = {
 
 DOM.avatar.src = unknownAvatar;
 
+if (typeof AbortSignal !== 'undefined' && !AbortSignal.timeout) {
+  AbortSignal.timeout = function(ms) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), ms);
+    controller.signal.addEventListener('abort', () => clearTimeout(timer));
+    return controller.signal;
+  };
+}
+
 function setupEventListeners() {
 
     document.addEventListener("visibilitychange", () => {
@@ -47,7 +56,7 @@ function setupEventListeners() {
             return;
         }
 
-        saveConfig(tipplyId, seToken);
+        saveConfig({ tipplyId, seToken });
         hideConfig();
         location.reload();
     });
@@ -96,7 +105,7 @@ function formatTipplyID(url) {
     return match ? match[1] : null;
 }
 
-function saveConfig(tipplyId, seToken) {
+function saveConfig({ tipplyId, seToken }) {
     localStorage.setItem('tipply_user_id', tipplyId);
     localStorage.setItem('se_jwt_token', seToken);
 }
@@ -133,6 +142,11 @@ function formatTime(ms) {
     const days = Math.floor(ms / (1000 * 60 * 60 * 24));
 
     return { days, hours, minutes, seconds };
+}
+
+function sanitizeMessage(message) {
+    const sanitizedMessage = message.replace(/<img[^>]*alt="([^"]*)"[^>]*>/g, (_, alt) => alt);
+    return DOMPurify.sanitize(sanitizedMessage);
 }
 
 function updateTokenDisplay(totalMs) {
@@ -218,7 +232,7 @@ async function sendTipToSE(tip, maxRetries = 2) {
                         email: tip.email || 'anonymous@tipply.pl',
                     },
                     provider: 'tipply',
-                    message: tip.message?.replace(/<img[^>]*alt="([^"]*)"[^>]*>/g, (_, alt) => alt) || '',
+                    message: sanitizeMessage(tip.message) || '',
                     amount: parseFloat((tip.amount / 100).toFixed(2)),
                     currency: CONFIG.CURRENCY,
                     imported: true,
