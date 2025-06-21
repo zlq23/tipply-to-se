@@ -98,11 +98,13 @@ function loadConfig() {
     };
 }
 
-function formatTipplyID(url) {
-    if (!url) return null;
-    const regex = /\/([^\/]+)$/;
-    const match = url.match(regex);
-    return match ? match[1] : null;
+function formatTipplyID(input) {
+    if (!input) return null;
+    input = input.trim().replace(/\/+$/, ''); 
+    const parts = input.split('/');
+    const lastPart = parts[parts.length - 1];
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(lastPart) ? lastPart : input;
 }
 
 function saveConfig({ tipplyId, seToken }) {
